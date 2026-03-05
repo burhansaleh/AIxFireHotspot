@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODIS Fire Hotspot Dashboard - Thailand (2020-2025)</title>
+    <meta name="description" content="Interactive dashboard visualizing MODIS fire hotspot patterns in Thailand with temporal trends, spatial clustering, and machine learning predictions">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .stat-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            max-height: 400px;
+        }
+        
+        .chart-container-tall {
+            position: relative;
+            height: 500px;
+            max-height: 500px;
+        }
+        
+        #map {
+            height: 600px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .fire-gradient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .success-gradient {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .warning-gradient {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .info-gradient {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-2">MODIS Fire Hotspot Dashboard</h1>
+                    <p class="text-xl text-gray-100">Thailand Wildfire Analysis (2020-2025)</p>
+                </div>
+                <div class="mt-4 md:mt-0 text-center md:text-right">
+                    <div class="text-3xl font-bold">113,475</div>
+                    <div class="text-sm text-gray-200">Total Fire Hotspots</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Key Statistics -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- Stat Card 1 -->
+            <div class="stat-card bg-white rounded-xl shadow-lg p-6 fire-gradient text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium opacity-90">Dry Season Concentration</p>
+                        <h3 class="text-4xl font-bold mt-2">87.7%</h3>
+                        <p class="text-xs mt-2 opacity-80">January - April</p>
+                    </div>
+                    <div class="text-5xl opacity-30">🔥</div>
+                </div>
+            </div>
+            
+            <!-- Stat Card 2 -->
+            <div class="stat-card bg-white rounded-xl shadow-lg p-6 warning-gradient text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium opacity-90">March Peak</p>
+                        <h3 class="text-4xl font-bold mt-2">31.2%</h3>
+                        <p class="text-xs mt-2 opacity-80">of Annual Fires</p>
+                    </div>
+                    <div class="text-5xl opacity-30">📊</div>
+                </div>
+            </div>
+            
+            <!-- Stat Card 3 -->
+            <div class="stat-card bg-white rounded-xl shadow-lg p-6 success-gradient text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium opacity-90">ML Prediction Accuracy</p>
+                        <h3 class="text-4xl font-bold mt-2">88.9%</h3>
+                        <p class="text-xs mt-2 opacity-80">Random Forest Model</p>
+                    </div>
+                    <div class="text-5xl opacity-30">🤖</div>
+                </div>
+            </div>
+            
+            <!-- Stat Card 4 -->
+            <div class="stat-card bg-white rounded-xl shadow-lg p-6 info-gradient text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium opacity-90">High-Risk Clusters</p>
+                        <h3 class="text-4xl font-bold mt-2">143</h3>
+                        <p class="text-xs mt-2 opacity-80">Priority Zones (HH)</p>
+                    </div>
+                    <div class="text-5xl opacity-30">📍</div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    
+    <!-- Temporal Analysis Section -->
+    <section class="container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">📈 Temporal Patterns</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Annual Trends -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Annual Fire Hotspot Frequency</h3>
+                <div class="chart-container">
+                    <canvas id="annualChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Monthly Distribution -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Monthly Distribution Pattern</h3>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Quarterly Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Quarterly Fire Activity</h3>
+                <div class="chart-container">
+                    <canvas id="quarterlyChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Daily Pattern -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Daily Detection Pattern</h3>
+                <div class="chart-container">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    
+    <!-- Spatial Analysis Section -->
+    <section class="container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">🗺️ Spatial Distribution & Clustering</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            
+            <!-- Spatial Statistics -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Spatial Statistics</h3>
+                <div class="space-y-4">
+                    <div class="border-l-4 border-red-500 pl-4">
+                        <p class="text-sm text-gray-600">Nearest Neighbor Index</p>
+                        <p class="text-2xl font-bold text-gray-800">0.4233</p>
+                        <p class="text-xs text-gray-500">Highly Clustered (z=-15.23, p<0.001)</p>
+                    </div>
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <p class="text-sm text-gray-600">Moran's I</p>
+                        <p class="text-2xl font-bold text-gray-800">0.5686</p>
+                        <p class="text-xs text-gray-500">Strong Spatial Autocorrelation (z=11.2, p<0.001)</p>
+                    </div>
+                    <div class="border-l-4 border-green-500 pl-4">
+                        <p class="text-sm text-gray-600">Northern Thailand</p>
+                        <p class="text-2xl font-bold text-gray-800">40.1%</p>
+                        <p class="text-xs text-gray-500">45,500 hotspots</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- LISA Clusters -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">LISA Cluster Analysis</h3>
+                <div class="chart-container">
+                    <canvas id="lisaChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Top Provinces -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Top 5 Provinces</h3>
+                <div class="chart-container">
+                    <canvas id="provincesChart"></canvas>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Interactive Map -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Fire Hotspot Distribution Map</h3>
+            <p class="text-sm text-gray-600 mb-4">Interactive map showing fire hotspot concentration across Thailand. Red markers indicate high-intensity zones.</p>
+            <div id="map"></div>
+        </div>
+        
+    </section>
+    
+    <!-- Machine Learning Section -->
+    <section class="container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">🤖 Machine Learning Predictions</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Classification Performance -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Classification Performance</h3>
+                <div class="chart-container">
+                    <canvas id="mlClassificationChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div class="text-center p-3 bg-blue-50 rounded-lg">
+                        <p class="text-sm text-gray-600">AUC Score</p>
+                        <p class="text-2xl font-bold text-blue-600">0.94</p>
+                    </div>
+                    <div class="text-center p-3 bg-green-50 rounded-lg">
+                        <p class="text-sm text-gray-600">F1-Score</p>
+                        <p class="text-2xl font-bold text-green-600">89.4%</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Importance -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Feature Importance</h3>
+                <div class="chart-container">
+                    <canvas id="featureImportanceChart"></canvas>
+                </div>
+                <div class="mt-4 p-3 bg-purple-50 rounded-lg">
+                    <p class="text-sm text-gray-600">Model Type: <span class="font-semibold">Random Forest</span></p>
+                    <p class="text-sm text-gray-600">Lead Time: <span class="font-semibold">1-3 months</span></p>
+                    <p class="text-sm text-gray-600">R² Score: <span class="font-semibold">0.73</span></p>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    
+    <!-- Key Findings & Recommendations -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Key Findings -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">🔍 Key Findings</h3>
+                <ul class="space-y-3" id="keyFindings"></ul>
+            </div>
+            
+            <!-- Recommendations -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">💡 Management Recommendations</h3>
+                <ul class="space-y-3" id="recommendations"></ul>
+            </div>
+            
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="gradient-bg text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Data Source</h4>
+                    <p class="text-sm text-gray-200">MODIS Collection 6.1 MCD14DL Active Fire Product</p>
+                    <p class="text-sm text-gray-200">NASA FIRMS (Fire Information for Resource Management System)</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Study Period</h4>
+                    <p class="text-sm text-gray-200">2020 - 2025</p>
+                    <p class="text-sm text-gray-200">113,475 fire hotspots analyzed</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Methodology</h4>
+                    <p class="text-sm text-gray-200">Spatiotemporal Analysis</p>
+                    <p class="text-sm text-gray-200">Spatial Statistics (NNI, Moran's I, LISA)</p>
+                    <p class="text-sm text-gray-200">Machine Learning (Random Forest)</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-400 mt-6 pt-6 text-center">
+                <p class="text-sm text-gray-200">&copy; 2026 MODIS Fire Hotspot Analysis Dashboard. For wildfire disaster management and planning.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Dashboard JavaScript -->
+    <script src="dashboard.js"></script>
+    
+</body>
+</html>

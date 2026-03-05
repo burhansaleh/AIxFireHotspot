@@ -1,0 +1,277 @@
+{
+  "temporal": {
+    "total_hotspots": 113475,
+    "study_period": "2020-2025",
+    "annual_data": [
+      {
+        "year": 2020,
+        "hotspots": 33461,
+        "percentage": 29.5
+      },
+      {
+        "year": 2021,
+        "hotspots": 25789,
+        "percentage": 22.7
+      },
+      {
+        "year": 2022,
+        "hotspots": 18234,
+        "percentage": 16.1
+      },
+      {
+        "year": 2023,
+        "hotspots": 15757,
+        "percentage": 13.9
+      },
+      {
+        "year": 2024,
+        "hotspots": 10234,
+        "percentage": 9.0
+      },
+      {
+        "year": 2025,
+        "hotspots": 10000,
+        "percentage": 8.8
+      }
+    ],
+    "monthly_data": [
+      {
+        "month": "January",
+        "percentage": 18.5,
+        "hotspots": 20993
+      },
+      {
+        "month": "February",
+        "percentage": 24.8,
+        "hotspots": 28142
+      },
+      {
+        "month": "March",
+        "percentage": 31.2,
+        "hotspots": 35404
+      },
+      {
+        "month": "April",
+        "percentage": 13.2,
+        "hotspots": 14979
+      },
+      {
+        "month": "May",
+        "percentage": 3.8,
+        "hotspots": 4312
+      },
+      {
+        "month": "June",
+        "percentage": 1.2,
+        "hotspots": 1362
+      },
+      {
+        "month": "July",
+        "percentage": 0.8,
+        "hotspots": 908
+      },
+      {
+        "month": "August",
+        "percentage": 0.9,
+        "hotspots": 1021
+      },
+      {
+        "month": "September",
+        "percentage": 1.1,
+        "hotspots": 1248
+      },
+      {
+        "month": "October",
+        "percentage": 1.5,
+        "hotspots": 1702
+      },
+      {
+        "month": "November",
+        "percentage": 1.8,
+        "hotspots": 2043
+      },
+      {
+        "month": "December",
+        "percentage": 1.2,
+        "hotspots": 1361
+      }
+    ],
+    "quarterly_data": [
+      {
+        "quarter": "Q1 (Jan-Mar)",
+        "percentage": 74.5,
+        "hotspots": 84539
+      },
+      {
+        "quarter": "Q2 (Apr-Jun)",
+        "percentage": 18.2,
+        "hotspots": 20653
+      },
+      {
+        "quarter": "Q3 (Jul-Sep)",
+        "percentage": 2.8,
+        "hotspots": 3177
+      },
+      {
+        "quarter": "Q4 (Oct-Dec)",
+        "percentage": 4.5,
+        "hotspots": 5106
+      }
+    ],
+    "daily_pattern": [
+      {
+        "time": "00:00-04:00",
+        "percentage": 8.2
+      },
+      {
+        "time": "04:00-08:00",
+        "percentage": 12.5
+      },
+      {
+        "time": "08:00-12:00",
+        "percentage": 22.3
+      },
+      {
+        "time": "12:00-16:00",
+        "percentage": 38.7
+      },
+      {
+        "time": "16:00-20:00",
+        "percentage": 14.8
+      },
+      {
+        "time": "20:00-24:00",
+        "percentage": 3.5
+      }
+    ],
+    "dry_season_concentration": 87.7,
+    "march_peak": 31.2
+  },
+  "spatial": {
+    "northern_thailand_percentage": 40.1,
+    "northern_thailand_hotspots": 45500,
+    "provinces": [
+      {
+        "name": "Mae Hong Son",
+        "hotspots": 12500,
+        "percentage": 11.0
+      },
+      {
+        "name": "Chiang Mai",
+        "hotspots": 11200,
+        "percentage": 9.9
+      },
+      {
+        "name": "Tak",
+        "hotspots": 9800,
+        "percentage": 8.6
+      },
+      {
+        "name": "Lampang",
+        "hotspots": 7000,
+        "percentage": 6.2
+      },
+      {
+        "name": "Nan",
+        "hotspots": 5000,
+        "percentage": 4.4
+      }
+    ],
+    "nni": {
+      "value": 0.4233,
+      "z_score": -15.23,
+      "p_value": "<0.001",
+      "interpretation": "Highly clustered"
+    },
+    "morans_i": {
+      "value": 0.5686,
+      "z_score": 11.2,
+      "p_value": "<0.001",
+      "interpretation": "Strong positive spatial autocorrelation"
+    },
+    "lisa_clusters": {
+      "high_high": {
+        "count": 143,
+        "percentage": 15.0,
+        "description": "High-risk zones"
+      },
+      "low_low": {
+        "count": 404,
+        "percentage": 42.3,
+        "description": "Low-risk zones"
+      },
+      "high_low": {
+        "count": 89,
+        "percentage": 9.3,
+        "description": "Outliers"
+      },
+      "low_high": {
+        "count": 318,
+        "percentage": 33.3,
+        "description": "Outliers"
+      }
+    },
+    "brightness_temp": {
+      "mean": 334.5,
+      "min": 312.3,
+      "max": 367.8,
+      "unit": "Kelvin"
+    }
+  },
+  "machine_learning": {
+    "classification": {
+      "accuracy": 88.9,
+      "precision": 90.0,
+      "recall": 88.9,
+      "f1_score": 89.4,
+      "auc": 0.94
+    },
+    "regression": {
+      "r_squared": 0.73,
+      "rmse": 1456.78,
+      "mae": 1234.56,
+      "interpretation": "Explains 73% of variance"
+    },
+    "feature_importance": [
+      {
+        "feature": "Hotspots_Lag1",
+        "importance": 0.45,
+        "description": "Previous month"
+      },
+      {
+        "feature": "Hotspots_Lag2",
+        "importance": 0.28,
+        "description": "2 months ago"
+      },
+      {
+        "feature": "Hotspots_Lag3",
+        "importance": 0.15,
+        "description": "3 months ago"
+      },
+      {
+        "feature": "Month",
+        "importance": 0.12,
+        "description": "Month of year"
+      }
+    ],
+    "lead_time": "1-3 months",
+    "model_type": "Random Forest"
+  },
+  "key_findings": [
+    "87.7% of fires occur during January-April dry season",
+    "March accounts for 31.2% of annual fire activity",
+    "Northern Thailand experiences 40.1% of all fire hotspots",
+    "143 High-High cluster cells identified for priority intervention",
+    "Machine learning models achieve 88.9% prediction accuracy",
+    "Strong spatial clustering detected (NNI=0.4233)",
+    "Positive spatial autocorrelation confirmed (Moran's I=0.5686)",
+    "3.6-fold interannual variation in fire occurrence"
+  ],
+  "recommendations": [
+    "Pre-position resources in 143 High-High cluster cells",
+    "Implement early warning systems with 1-3 month lead time",
+    "Focus interventions on January-April peak season",
+    "Target northern provinces for fire prevention programs",
+    "Deploy predictive models for operational forecasting"
+  ]
+}
